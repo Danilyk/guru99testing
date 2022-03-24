@@ -41,7 +41,7 @@ Cypress.Commands.add('insertionValues', (val) => {
 });
 //---------------------- insert one invalid value into fields --------------------
 Cypress.Commands.add('oneInsertionValues', (val, item, bad) => {
-	cy.get('.uniform > .3u > input').each( ($el, index, $list) => {
+	cy.get('.uniform > .3u > input').each( ($el, index) => {
 		if ( index == item){
 			cy.wrap($el)
 				.scrollIntoView()
@@ -57,17 +57,10 @@ Cypress.Commands.add('oneInsertionValues', (val, item, bad) => {
 });
 // ---------------------- testing values out of range (longer) ----------------
 Cypress.Commands.add('OverValues', (lenArr) => {
-	let i=0;
-	cy.get('.uniform > .3u > input').then( ($els) => {
-		Cypress.$.makeArray($els)
-		.map((el) => {
-			cy.get(el)
+	cy.get('.uniform > .3u > input').each( ($els, i) => {
+		cy.wrap($els)
 			.invoke('val')
-  			.then(someVal => {
-				expect(someVal.length).to.equal(lenArr[i]);
-				i++;
-			});
-		});
+			.should('have.length',lenArr[i]);
 	});
 });
 // ---------------------- testing reset button functionality ----------------
@@ -76,15 +69,8 @@ Cypress.Commands.add('ResetButton', () => {
 		.scrollIntoView()
 		.should("be.visible")
 		.click();	
-	cy.get('.uniform > .3u > input').then( ($els) => {
-		Cypress.$.makeArray($els)
-		.map((el) => {
-			cy.get(el)
-			.invoke('val')
-  			.then(someVal => {
-				expect(someVal).to.equal('');
-			});
-		});
+	cy.get('.uniform > .3u > input').each( ($el) => {
+		cy.wrap($el).should('have.value','');
 	});
 });
 // -------------------------- submit correct data -----------------------------
@@ -104,7 +90,7 @@ Cypress.Commands.add('submitIncorrectData', () => {
 		.should("be.visible")
 		.click()
 		.then(() => {
-		  expect(stub.getCall(0)).to.be.calledWith('please fill all fields Correct Value');
+			expect(stub.getCall(0)).to.be.calledWith('please fill all fields Correct Value');
 		});
 });
 
@@ -114,9 +100,10 @@ Cypress.Commands.add('submitIncorrectData', () => {
 
 //-------------------- <<<< START!!!   TELECOM ADD CUSTOMER >>>> ----------------------
 
-Cypress.Commands.add('insertionCustomerValues', (i,arrTextField, email, address) => {
+Cypress.Commands.add('insertionCustomerValues', (i, data) => {
+	const arr =['input[name="fname"]','input[name="lname"]','input[name="emailid"]','textarea[name="addr"]','input[name="telephoneno"]'];
 	
-	cy.get('.2u label').each( ($el, index, $list) => {
+	cy.get('.2u label').each( ($el, index) => {
 		if ( index == i ){
 			cy.wrap($el)
 				.scrollIntoView()
@@ -124,23 +111,58 @@ Cypress.Commands.add('insertionCustomerValues', (i,arrTextField, email, address)
 				.click();
 		}
 	});
-	
-	cy.get('input[type="text"]').each( ($el, index, $list) => {
-		cy.wrap($el)
+	arr.map((el,index) => {
+		cy.get(el)
 			.scrollIntoView()
 			.should("be.visible")
-			.type(arrTextField[index]);
+			.type(data[index]);
 	});
-	cy.get('input[name="emailid"]')
-		.scrollIntoView()
-		.should("be.visible")
-		.type(email);
-	
-	cy.get('textarea[name="addr"]')
-		.scrollIntoView()
-		.should("be.visible")
-		.type(address);
-
 });
 
+// -------------------------- submit correct data -----------------------------
+Cypress.Commands.add('submitCorrectDataCustimer', () => {
+	cy.get('input[value="Submit"]')
+		.scrollIntoView()
+		.should("be.visible")
+		.click();
+	cy.contains('h1','Access Details to Guru99 Telecom');
+});
+// ------------------------- SUBMIT INCORRECT DATA ----------------------------
+Cypress.Commands.add('submitIncorrectDataCustomer', () => {
+	const stub = cy.stub();  
+	cy.on ('window:alert', stub);
+	cy.get('input[value="Submit"]')
+		.scrollIntoView()
+		.should("be.visible")
+		.click()
+		.then(() => {
+		  expect(stub.getCall(0)).to.be.calledWith('please fill all fields');
+		});
+});
+// ---------------------- testing reset button functionality ----------------
+Cypress.Commands.add('ResetButtonCustomer', () => {	
 
+	cy.get('input[value="Reset"]')
+		.scrollIntoView()
+		.should("be.visible")
+		.click();	
+	
+	cy.get('.2u label').each( ($el) => {
+		cy.wrap($el).should('have.value','');
+	});	
+	cy.get('input[type="text"]').each( ($el) => {
+		cy.wrap($el).should('have.value','');
+	});
+	cy.get('input[name="emailid"]').should('have.value','');
+	
+	cy.get('textarea[name="addr"]').should('have.value','');
+});
+// ---------------------- testing values out of range (longer) ----------------
+Cypress.Commands.add('OverValuesCustomer', (lenArr) => {
+	const arr =['input[name="fname"]','input[name="lname"]','input[name="emailid"]','textarea[name="addr"]','input[name="telephoneno"]'];
+	arr.map( (el,i) => {
+		cy.get(el)
+			.invoke('val')
+			.should('have.length',lenArr[i]);
+	});
+});
