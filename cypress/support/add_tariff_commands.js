@@ -1,7 +1,7 @@
 //-------------------- <<<< START!!!!  TELECOM ADD TARIFF >>>> ----------------------
 
 //------------------------ insert value into fields -------------------------
-Cypress.Commands.add('insertionValues', (val) => {
+Cypress.Commands.add('insertTariffData', (val) => {
 	cy.get('.uniform > .3u > input').then( $els => {
 		Cypress.$.makeArray($els)
 		.map((el) => {
@@ -13,7 +13,7 @@ Cypress.Commands.add('insertionValues', (val) => {
 	});
 });
 //---------------------- insert one invalid value into fields --------------------
-Cypress.Commands.add('oneInsertionValues', (val, item, bad) => {
+Cypress.Commands.add('insertOneInvalidTariffValues', (val, item, bad) => {
 	cy.get('.uniform > .3u > input').each( ($el, index) => {
 		if ( index == item){
 			cy.wrap($el)
@@ -29,11 +29,11 @@ Cypress.Commands.add('oneInsertionValues', (val, item, bad) => {
 	});
 });
 // ---------------------- testing values out of range (longer) ----------------
-Cypress.Commands.add('OverValues', (lenArr) => {
+Cypress.Commands.add('OverTariffValues', (arrayMaxLength) => {
 	cy.get('.uniform > .3u > input').each( ($els, i) => {
 		cy.wrap($els)
 			.invoke('val')
-			.should('have.length',lenArr[i]);
+			.should('have.length',arrayMaxLength[i]);
 	});
 });
 // ---------------------- testing reset button functionality ----------------
@@ -46,25 +46,24 @@ Cypress.Commands.add('ResetButton', () => {
 		cy.wrap($el).should('have.value','');
 	});
 });
-// -------------------------- submit correct data -----------------------------
-Cypress.Commands.add('submitCorrectData', () => {
-	cy.get('input[value="submit"]')
-		.scrollIntoView()
-		.should("be.visible")
-		.click();
-	cy.contains('h2','Congratulation you add Tariff Plan');
-});
-// ------------------------- SUBMIT INCORRECT DATA ----------------------------
-Cypress.Commands.add('submitIncorrectData', () => {
+// -------------------------- submit tariff data -----------------------------
+Cypress.Commands.add('submitTariffData', () => {
 	const stub = cy.stub();  
 	cy.on ('window:alert', stub);
 	cy.get('input[value="submit"]')
 		.scrollIntoView()
 		.should("be.visible")
-		.click()
-		.then(() => {
-			expect(stub.getCall(0)).to.be.calledWith('please fill all fields Correct Value');
-		});
+		.click();
+	return cy.wrap(stub);
 });
 
-//---------------------- <<<< END!!!   TELECOM ADD TARIFF >>>> ------------------------
+// -------------------------- check correct data -----------------------------
+Cypress.Commands.add('correctDataCheck', () => {
+	cy.contains('h2','Congratulation you add Tariff Plan');
+});
+// -------------------------- check incorrect data -----------------------------
+Cypress.Commands.add('incorrectDataCheck', (stub) => {
+	expect(stub.getCall(0)).to.be.calledWith('please fill all fields Correct Value');
+});
+
+

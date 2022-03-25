@@ -6,14 +6,17 @@ Cypress.Commands.add('GenerateCard', (array) => {
 	cy.get('.inner > h4')
 		.each( ($els, i) => {
 			cy.get($els).invoke('text').then( innerText => {
-				(i==0 || i==1) ? 
-					(cardDataArr[i] = innerText.split('-')[1].trim()) :
-				i==2 ? 
-					(cardDataArr[i] = innerText.split('-')[1].split('/')[0].trim(),
-					cardDataArr[i+1] = innerText.split('-')[1].split('/')[1].trim()) : 
-				i==3 ?
-					(cardDataArr[i+1] = innerText.split('$')[1].trim()) :
-				false;
+				switch(i){
+					case 0: cardDataArr[i] = innerText.split('-')[1].trim();
+							break;
+					case 1: cardDataArr[i] = innerText.split('-')[1].trim();
+							break;
+					case 2: cardDataArr[i] = innerText.split('-')[1].split('/')[0].trim();
+							cardDataArr[i+1] = innerText.split('-')[1].split('/')[1].trim();
+							break;
+					case 3: cardDataArr[i+1] = innerText.split('$')[1].trim();
+							break;
+				}
 			});	
 	});
 	return cy.wrap(cardDataArr);

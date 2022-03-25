@@ -4,69 +4,95 @@ describe("add tariff plans page", () => {
  	});
 	
 	it("correct data", () => {			
-		cy.insertionValues('11111');
-		cy.submitCorrectData();	
+		cy.insertTariffData('11111');
+		cy.submitTariffData;
+		cy.correctDataCheck;
 	}); 
 	
 	it("values out of range", () => {	
-		const lenArr = [5,5,5,5,3,3,3];
-		cy.insertionValues('1111111111');
-		cy.OverValues(lenArr);
+		const arrayMaxLength = [5,5,5,5,3,3,3];
+		cy.insertTariffData('1111111111');
+		cy.OverTariffValues(arrayMaxLength);
 	});
 
 	it("special chars", () => {			
-		cy.insertionValues('1@@@1');
-		cy.submitIncorrectData();
+		cy.insertTariffData('1@@@1');
+		cy.submitTariffData().then((stub)=>{
+			cy.incorrectDataCheck(stub);
+		}); 
+		
 	});
 	
 	it("empty value", () => {			
-		cy.insertionValues(' ');
-		cy.submitIncorrectData();
+		cy.insertTariffData(' ');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});
 	});
 
 	it("chars", () => {			
-		cy.insertionValues('wwwww');
-		cy.submitIncorrectData();
+		cy.insertTariffData('wwwww');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});
 	});
 
 	it("negative numbers", () => {			
-		cy.insertionValues('-2000');
-		cy.submitIncorrectData();
+		cy.insertTariffData('-2000');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});
 	});
 
 	it("reset button", () => {			
-		cy.insertionValues('123');
+		cy.insertTariffData('123');
 		cy.ResetButton();
-		cy.submitIncorrectData();
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});
 	});
 	
 	it("difference incorrect data", () => {			
-		cy.oneInsertionValues('22222','0','1@W#$');
-		cy.submitIncorrectData();	
+		cy.insertOneInvalidTariffValues('22222','0','1@W#$');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});	
 	}); 
 	it("difference incorrect data", () => {			
-		cy.oneInsertionValues('22222','1','1@W#$');
-		cy.submitIncorrectData();	
+		cy.insertOneInvalidTariffValues('22222','1','1@W#$');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});	
 	}); 
 	it("difference incorrect data", () => {			
-		cy.oneInsertionValues('22222','2','1@W#$');
-		cy.submitIncorrectData();	
+		cy.insertOneInvalidTariffValues('22222','2','1@W#$');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});	
 	}); 
 	it("difference incorrect data", () => {			
-		cy.oneInsertionValues('22222','3','1@W#$');
-		cy.submitIncorrectData();	
+		cy.insertOneInvalidTariffValues('22222','3','1@W#$');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});	
 	}); 
 		it("difference incorrect data", () => {			
-		cy.oneInsertionValues('22222','4','1@W#$');
-		cy.submitIncorrectData();	
+		cy.insertOneInvalidTariffValues('22222','4','1@W#$');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});	
 	}); 
 	it("difference incorrect data", () => {			
-		cy.oneInsertionValues('22222','5','1@W#$');
-		cy.submitIncorrectData();	
+		cy.insertOneInvalidTariffValues('22222','5','1@W#$');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});	
 	}); 
 	it("difference incorrect data", () => {			
-		cy.oneInsertionValues('22222','6','1@W#$');
-		cy.submitIncorrectData();	
+		cy.insertOneInvalidTariffValues('22222','6','1@W#$');
+		cy.submitTariffData().then((stub) => {
+			cy.incorrectDataCheck(stub);
+		});	
 	}); 
 	
 	
