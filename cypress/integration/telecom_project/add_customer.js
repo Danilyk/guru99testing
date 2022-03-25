@@ -3,30 +3,37 @@ describe("add customer page", () => {
     	cy.visit('https://demo.guru99.com/telecom/addcustomer.php')
  	});
 	
-//	**** paramtres insertionCustomerValues(1,2): 
-//	**** 1 - 0:pending / 1:done
-//	**** 2 - array with test "data" : first name, last name, email address, physical address, phone number	
+//	const userData = {
+//		status: ['Done','Pending'],
+//		fname: firstUserName,
+//		lname: lastUserName,
+//		email: test@test.ru,
+//		address: physicalAddress,
+//		phoneNumber: +79998887766
+//	};
 	
 	it("correct data", () => {	
 //	**** bug on this site, undefinde parameters ****
 		Cypress.on('uncaught:exception', (err, runnable) => {
 			return false;
 		});
-		const data = ['Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
-		cy.insertionCustomerValues(0,data);
-		cy.submitCorrectDataCustimer();
+		const userData = [0,'Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
+		cy.insertDataCustomer(userData);
+		cy.submitDataCustomer();
+		cy.validCheckData();
 	}); 
-	
-	
+		
 //	**** for more test with different incorrect data ****
 	it("Incorrect data", () => {	
 //	**** bug on this site, undefinde parameters ****
 		Cypress.on('uncaught:exception', (err, runnable) => {
 			return false;
 		});		
-		const data = ['Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
-		cy.insertionCustomerValues(0,data);
-		cy.submitIncorrectDataCustomer();
+		const userData = ['','Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
+		cy.insertDataCustomer(userData);
+		cy.submitDataCustomer().then( (stub) => {
+			cy.invalidCheckData(stub);	
+		});		
 	}); 
 	
 	it("Reset button testing", () => {	
@@ -34,10 +41,12 @@ describe("add customer page", () => {
 		Cypress.on('uncaught:exception', (err, runnable) => {
 			return false;
 		});		
-		const data = ['Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
-		cy.insertionCustomerValues(0,data);
+		const userData = ['0','Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
+		cy.insertDataCustomer(userData);
 		cy.ResetButtonCustomer();
-		cy.submitIncorrectDataCustomer();
+		cy.submitDataCustomer().then( (stub) => {
+			cy.invalidCheckData(stub);	
+		});
 	}); 	
 
 	it("values out of range", () => {	
@@ -46,11 +55,10 @@ describe("add customer page", () => {
 			return false;
 		});		
 //	**** lenArr - array max valid symbols in fields ****
-		const lenArr = [10,10,10,10,12];
+		const maxLengthFields = [10,10,10,10,12];
 //	**** for this test array data contains values out of range ****
-		const data = ['AAAAAAAAAAAAAAAAAAAA','AAAAAAAAAAAAAAAAAAAA','AAAAAAAAAAAAAAAAAAAA@bomba.com','ulitsa pushkina dom kolotushkina','+7999888776638752875637256'];
-		cy.insertionCustomerValues(0,data);
-		cy.OverValuesCustomer(lenArr);
-	});
-	
+		const userData = [0,'AAAAAAAAAAAAAAAAAAAA','AAAAAAAAAAAAAAAAAAAA','AAAAAAAAAAAAAAAAAAAA@bomba.com','ulitsa pushkina dom kolotushkina','+7999888776638752875637256'];
+		cy.insertDataCustomer(userData);
+		cy.OverValuesCustomer(maxLengthFields);
+	});	
 });
