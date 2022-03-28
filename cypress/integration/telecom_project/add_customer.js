@@ -20,7 +20,7 @@ describe("add customer page", () => {
 		const userData = [0,'Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
 		cy.insertDataCustomer(userData);
 		cy.submitDataCustomer();
-		cy.validCheckData();
+		cy.validCustomerDataCheck();
 	}); 
 		
 //	**** for more test with different incorrect data ****
@@ -32,7 +32,7 @@ describe("add customer page", () => {
 		const userData = ['','Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
 		cy.insertDataCustomer(userData);
 		cy.submitDataCustomer().then( (stub) => {
-			cy.invalidCheckData(stub);	
+			cy.invalidCustomerDataCheck(stub);	
 		});		
 	}); 
 	
@@ -45,7 +45,7 @@ describe("add customer page", () => {
 		cy.insertDataCustomer(userData);
 		cy.ResetButtonCustomer();
 		cy.submitDataCustomer().then( (stub) => {
-			cy.invalidCheckData(stub);	
+			cy.invalidCustomerDataCheck(stub);	
 		});
 	}); 	
 

@@ -58,11 +58,11 @@ Cypress.Commands.add('submitTariffData', () => {
 });
 
 // -------------------------- check correct data -----------------------------
-Cypress.Commands.add('correctDataCheck', () => {
+Cypress.Commands.add('correctTariffDataCheck', () => {
 	cy.contains('h2','Congratulation you add Tariff Plan');
 });
 // -------------------------- check incorrect data -----------------------------
-Cypress.Commands.add('incorrectDataCheck', (stub) => {
+Cypress.Commands.add('incorrectTariffDataCheck', (stub) => {
 	expect(stub.getCall(0)).to.be.calledWith('please fill all fields Correct Value');
 });
 

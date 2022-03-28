@@ -32,12 +32,12 @@ Cypress.Commands.add('submitDataCustomer', () => {
 });
 
 // -------------------------- valid data check -----------------------------
-Cypress.Commands.add('validCheckData', () => {
+Cypress.Commands.add('validCustomerDataCheck', () => {
 	cy.contains('h1','Access Details to Guru99 Telecom');
 });
 
 // -------------------------- invalid data check -----------------------------
-Cypress.Commands.add('invalidCheckData', (stub) => {
+Cypress.Commands.add('invalidCustomerDataCheck', (stub) => {
 	expect(stub.getCall(0)).to.be.calledWith('please fill all fields');
 });
 
