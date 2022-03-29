@@ -101,11 +101,9 @@ Cypress.Commands.add('checkPaymentFormField', (cardData) => {
 
 		checkMinInvalidValues('cvv code', 3, cardData.cvvCode, cvvField);
 		
-<<<<<<< HEAD
+
 		cy.get(submitButton).click();
 		
-=======
->>>>>>> 2415d963a262b5b9807f0ce8fecf9c4054a1677b
 		function checkMaxFieldLength(field, len, clear) {
 			cy.get(field)
 			.type(longInvalidNumber)
