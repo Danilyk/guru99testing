@@ -3,15 +3,6 @@ describe("add customer page", () => {
     	cy.visit('https://demo.guru99.com/telecom/addcustomer.php')
  	});
 	
-//	const userData = {
-//		status: ['Done','Pending'],
-//		fname: firstUserName,
-//		lname: lastUserName,
-//		email: test@test.ru,
-//		address: physicalAddress,
-//		phoneNumber: +79998887766
-//	};
-	
 	it("correct data", () => {	
 //	**** bug on this site, undefinde parameters ****
 		Cypress.on('uncaught:exception', (err, runnable) => {

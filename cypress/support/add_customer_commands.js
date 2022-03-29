@@ -50,14 +50,22 @@ Cypress.Commands.add('ResetButtonCustomer', () => {
 		.click();	
 	
 	cy.get('.2u label').each( ($el) => {
-		cy.wrap($el).should('have.value','');
+		cy.wrap($el)
+		.scrollIntoView()
+		.should('have.value','');
 	});	
 	cy.get('input[type="text"]').each( ($el) => {
-		cy.wrap($el).should('have.value','');
+		cy.wrap($el)
+		.scrollIntoView()
+		.should('have.value','');
 	});
-	cy.get('input[name="emailid"]').should('have.value','');
+	cy.get('input[name="emailid"]')
+		.scrollIntoView()
+		.should('have.value','');
 	
-	cy.get('textarea[name="addr"]').should('have.value','');
+	cy.get('textarea[name="addr"]')
+		.scrollIntoView()
+		.should('have.value','');
 });
 
 // ---------------------- testing values out of range (longer) ----------------
