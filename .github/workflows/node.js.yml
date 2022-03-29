@@ -17,8 +17,7 @@ jobs:
         with:
           # Specify Browser since container image is compile with Firefox
           browser: chrome
-
-jobs:
+          
   cypress-run-mobile-chrome:
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome88-ff89
