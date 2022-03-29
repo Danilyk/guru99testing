@@ -1,0 +1,367 @@
+describe("add customer page", () => {
+	beforeEach(() => {
+    	cy.visit('https://demo.guru99.com/telecom/addcustomer.php')
+ 	});
+	
+	it("correct data", () => {	
+//	**** bug on this site, undefinde parameters ****
+		Cypress.on('uncaught:exception', (err, runnable) => {
+			return false;
+		});
+		const userData = [0,'Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
+		cy.insertDataCustomer(userData);
+		cy.submitDataCustomer();
+		cy.validCustomerDataCheck();
+	}); 
+		
+//	**** for more test with different incorrect data ****
+	it("Incorrect data", () => {	
+//	**** bug on this site, undefinde parameters ****
+		Cypress.on('uncaught:exception', (err, runnable) => {
+			return false;
+		});		
+		const userData = ['','Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
+		cy.insertDataCustomer(userData);
+		cy.submitDataCustomer().then( (stub) => {
+			cy.invalidCustomerDataCheck(stub);	
+		});		
+	}); 
+	
+	it("Reset button testing", () => {	
+//	**** bug on this site, undefinde parameters ****
+		Cypress.on('uncaught:exception', (err, runnable) => {
+			return false;
+		});		
+		const userData = ['0','Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
+		cy.insertDataCustomer(userData);
+		cy.ResetButtonCustomer();
+		cy.submitDataCustomer().then( (stub) => {
+			cy.invalidCustomerDataCheck(stub);	
+		});
+	}); 	
+
+	it("values out of range", () => {	
+//	**** bug on this site, undefinde parameters ****
+		Cypress.on('uncaught:exception', (err, runnable) => {
+			return false;
+		});		
+//	**** lenArr - array max valid symbols in fields ****
+		const maxLengthFields = [10,10,10,10,12];
+//	**** for this test array data contains values out of range ****
+		const userData = [0,'AAAAAAAAAAAAAAAAAAAA','AAAAAAAAAAAAAAAAAAAA','AAAAAAAAAAAAAAAAAAAA@bomba.com','ulitsa pushkina dom kolotushkina','+7999888776638752875637256'];
+		cy.insertDataCustomer(userData);
+		cy.OverValuesCustomer(maxLengthFields);
+	});	
+});
+
+
+
+
+
+
+
+
+
+
+
+
+describe("add customer page", () => {
+	beforeEach(() => {
+    	cy.visit('https://demo.guru99.com/payment-gateway/index.php')
+ 	});
+	
+	const cardData = {
+		cardNumber: cardNumber,
+		cvvCode: cvvCode,
+		month: month,
+		year: year,
+		money: money
+	}
+	
+	it('payment with correct card data', () => {
+		cy.generateCard().then( cardData => {
+//const credentials = ['4660345266401126', '872', '12', '2026', '100.00'];
+			cy.selectProductInCart(3);
+			cy.insertCardData(cardData);
+			cy.correctPaymentCheck();
+		});
+	}); 
+	
+	it('payment with INcorrect card data', () => {
+		const cardData = {
+			cardNumber: '1111111111111111',
+			cvvCode: '111',
+			month: '01',
+			year: '2026',
+			money: '100.00'
+		}
+//		const cardData = ['1111111111111111', '111', '01', '2026', '100.00'];
+		cy.selectProductInCart(3);
+		cy.insertCardData(cardData);
+		cy.incorrectPaymentCheck();
+	});
+	
+	it('verification of debiting money from a bank card', () => {
+		cy.generateCard().then( cardData => {
+//const credentials = ['4660345266401126', '872', '12', '2026', '100.00'];
+			cy.selectProductInCart('1');
+			cy.insertCardData(cardData);
+			cy.correctPaymentCheck();
+			cy.checkCardBalance(cardData.cardNumber).then( initialBalance => {
+				cy.selectProductInCart('2');
+				cy.contains('font', '$').invoke('text').then( (val) =>{
+					let amount = val.slice(0, -3).replace('$','');
+					cy.insertCardData(cardData);
+					cy.correctPaymentCheck();
+					cy.checkCardBalance(cardData.cardNumber).then( currentBalance => {
+						expect(parseInt(initialBalance)).to.be.equal(parseInt(currentBalance) + parseInt(amount));
+					});
+				});
+			});	
+		});
+	});
+	
+	it('check fields on payment form', () => {
+		const cardData = {
+			cardNumber: '4660345266401126',
+			cvvCode: '872',
+			month: '12',
+			year: '2026',
+			money: '100.00'
+		};
+//		const cardData = ['1111111111111111', '111', '01', '2026', '100.00'];
+		cy.selectProductInCart(3);
+		cy.checkPaymentFormField(cardData);
+		cy.correctPaymentCheck();
+	});
+	
+});
+
+
+
+
+
+
+
+
+
+
+
+
+//-------------------- <<<< START!!!   PAYMENT GATEWAY >>>> ----------------------
+
+// ----------------------<< generate new card data >>-------------------------
+Cypress.Commands.add('generateCard', (array) => {
+	cy.contains('a','Generate Card Number').invoke('removeAttr', 'target').click();
+	cy.contains('h2','Here is your New Card');
+
+	const cardData = {};
+	cy.get('.inner > h4')
+		.each( ($els, i) => {
+			cy.get($els).invoke('text').then( innerText => {
+				switch(i){
+					case 0: cardData.cardNumber = innerText.split('-')[1].trim();
+							break;
+					case 1: cardData.cvvCode = innerText.split('-')[1].trim();
+							break;
+					case 2: cardData.month = innerText.split('-')[1].split('/')[0].trim();
+							cardData.year = innerText.split('-')[1].split('/')[1].trim();
+							break;
+					case 3: cardData.money = innerText.split('$')[1].trim();
+							break;
+				}
+			});	
+	});
+	return cy.wrap(cardData);
+});
+
+Cypress.Commands.add('selectProductInCart', (quant) => {
+	cy.contains('#nav a','Cart').click();
+	cy.get('select[name="quantity"]').select(quant);
+	cy.get('input[value="Buy Now"]').click();
+});
+
+Cypress.Commands.add('insertCardData', (cardData) => {
+	cy.get('input[name="card_nmuber"]').type(cardData.cardNumber);
+	cy.get('select[name="month"]').select(cardData.month);
+	cy.get('select[name="year"]').select(cardData.year);
+	cy.get('input[name="cvv_code"]').type(cardData.cvvCode);
+	cy.get('.actions input[type="submit"]').click();	
+});
+
+Cypress.Commands.add('correctPaymentCheck', () => {
+	cy.contains('h2','Payment successfull!');
+});
+					 
+Cypress.Commands.add('incorrectPaymentCheck', () => {
+	cy.contains('h2','Payment error!');
+});		
+
+Cypress.Commands.add('checkCardBalance', (cardNum) => {
+	cy.contains('#nav a','Check Credit Card Limit').click();
+	cy.get('input[name="card_nmuber"]').type(cardNum);
+	cy.get('input[value="submit"]').click();
+	cy.contains('h4', 'Credit Card Balance')
+		.get('span')
+		.invoke('text')
+		.then( cardBalance => {
+			return cy.wrap(cardBalance);
+		});
+});	
+
+Cypress.Commands.add('checkPaymentFormField', (cardData) => {
+	
+	const cvvField = 'input[name="cvv_code"]',
+		  numField = 'input[name="card_nmuber"]',
+		  submitButton = '.actions input[type="submit"]',
+		  longInvalidNumber = 12345678901234567890;	
+	let i = 0;
+	cy.get(cvvField)
+	.then(($el)=>{
+		$el.prop('required',true);
+	});
+	
+	cy.get('form[name="fbal"]').within( () => {
+		let stub = cy.stub();
+		cy.on ('window:alert', stub );
+		
+		cy.get('select:invalid').should('have.length',2);
+		cy.get(submitButton).click();
+		cy.get('select[name="month"]').select(cardData.month);
+		
+		cy.get('select:invalid').should('have.length',1);
+		cy.get(submitButton).click();		
+		cy.get('select[name="year"]').select(cardData.year);
+		
+		cy.get('select:invalid').should('have.length',0);
+		
+		cy.get('input:invalid').should('have.length',1);
+		checkMaxFieldLength(cvvField,3,'not clear after end');
+		cy.get('input:invalid').should('have.length',0);
+				
+		cy.get(submitButton).click().then(()=>{
+			expect(stub.getCall(0)).to.be.calledWith('Check card number is 16 digits!');
+		});
+		
+		checkMaxFieldLength(numField,16,'clear after end');
+		
+		checkMinInvalidValues('card number', 16, cardData.cardNumber, numField);
+		
+		cy.get(cvvField).clear();
+
+		checkMinInvalidValues('cvv code', 3, cardData.cvvCode, cvvField);
+		
+
+		cy.get(submitButton).click();
+		
+		function checkMaxFieldLength(field, len, clear) {
+			cy.get(field)
+			.type(longInvalidNumber)
+			.then( (fieldInner) => {
+				cy.get(fieldInner).invoke('val').should('have.length', len);
+				if (clear == 'clear after end'){
+					cy.get(fieldInner).clear();			
+				}
+			});
+		};		
+		
+//		function checkMinInvalidValues(textForAlert, maxLength, initialValue, field) {
+//			cy.get(field).then( fieldInner => {
+//				for(let i = 0; i < maxLength; i++){
+//					if ( i < (maxLength - 1) ){
+//						let currentValue = initialValue.slice(i,i+1);
+//						cy.get(fieldInner).type(currentValue);
+//						cy.get(submitButton).click()
+//							.then(()=>{
+//								expect(stub.getCall(0))
+//								.to.be.calledWith(`Check ${textForAlert} is ${maxLength} digits!`);
+//							});
+//					}
+//					else if (i < maxLength){
+//						let currentValue = initialValue.slice(i,i+1);
+//						cy.log(currentValue);
+//						cy.get(fieldInner).type(currentValue);
+//					};
+//				};
+//			});
+//		};	
+		
+		
+		function checkMinInvalidValues(textForAlert, maxLength, initialValue, field) {
+			cy.get(field).then( fieldInner => {	
+				if( i < (maxLength - 1) ){
+					let currentValue = initialValue.slice(i,i+1);
+					cy.get(fieldInner).type(currentValue);
+					i++;
+					cy.get(submitButton).click()
+						.then(()=>{
+							expect(stub.getCall(0))
+							.to.be.calledWith(`Check ${textForAlert} is ${maxLength} digits!`);		
+						});
+					checkMinInvalidValues(textForAlert, maxLength, initialValue, field);
+				}
+				else if(i == (maxLength - 1)){
+					cy.log(`lingth string - ${i+1}`);
+					let currentValue = initialValue.slice(i,i+1);
+					cy.get(fieldInner).type(currentValue);
+					cy.log(currentValue);
+					i=0;
+				}
+			});	
+		};
+	});	
+	
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

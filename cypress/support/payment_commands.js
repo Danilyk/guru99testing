@@ -115,28 +115,7 @@ Cypress.Commands.add('checkPaymentFormField', (cardData) => {
 			});
 		};		
 		
-//		function checkMinInvalidValues(textForAlert, maxLength, initialValue, field) {
-//			cy.get(field).then( fieldInner => {
-//				for(let i = 0; i < maxLength; i++){
-//					if ( i < (maxLength - 1) ){
-//						let currentValue = initialValue.slice(i,i+1);
-//						cy.get(fieldInner).type(currentValue);
-//						cy.get(submitButton).click()
-//							.then(()=>{
-//								expect(stub.getCall(0))
-//								.to.be.calledWith(`Check ${textForAlert} is ${maxLength} digits!`);
-//							});
-//					}
-//					else if (i < maxLength){
-//						let currentValue = initialValue.slice(i,i+1);
-//						cy.log(currentValue);
-//						cy.get(fieldInner).type(currentValue);
-//					};
-//				};
-//			});
-//		};	
-		
-		
+
 		function checkMinInvalidValues(textForAlert, maxLength, initialValue, field) {
 			cy.get(field).then( fieldInner => {	
 				if( i < (maxLength - 1) ){
@@ -162,22 +141,5 @@ Cypress.Commands.add('checkPaymentFormField', (cardData) => {
 	});	
 	
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
