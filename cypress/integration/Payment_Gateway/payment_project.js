@@ -3,13 +3,7 @@ describe("add customer page", () => {
     	cy.visit('https://demo.guru99.com/payment-gateway/index.php')
  	});
 	
-	const cardData = {
-		cardNumber: cardNumber,
-		cvvCode: cvvCode,
-		month: month,
-		year: year,
-		money: money
-	}
+
 	
 	it('payment with correct card data', () => {
 		cy.generateCard().then( cardData => {
