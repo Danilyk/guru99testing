@@ -59,30 +59,105 @@ Cypress.Commands.add('checkCardBalance', (cardNum) => {
 		});
 });	
 
-Cypress.Commands.add('emptyMontYear', (cardData) => {
+Cypress.Commands.add('checkPaymentFormField', (cardData) => {
+	
+	const cvvField = 'input[name="cvv_code"]',
+		  numField = 'input[name="card_nmuber"]',
+		  submitButton = '.actions input[type="submit"]',
+		  longInvalidNumber = 12345678901234567890;	
+	let i = 0;
+	cy.get(cvvField)
+	.then(($el)=>{
+		$el.prop('required',true);
+	});
+	
 	cy.get('form[name="fbal"]').within( () => {
-		const stub = cy.stub;
+		let stub = cy.stub();
 		cy.on ('window:alert', stub );
 		
-		cy.get('.actions input[type="submit"]').click();
-		
 		cy.get('select:invalid').should('have.length',2);
+		cy.get(submitButton).click();
 		cy.get('select[name="month"]').select(cardData.month);
-		cy.get('select:invalid').should('have.length',1);
-		cy.get('.actions input[type="submit"]').click();
 		
+		cy.get('select:invalid').should('have.length',1);
+		cy.get(submitButton).click();		
 		cy.get('select[name="year"]').select(cardData.year);
+		
 		cy.get('select:invalid').should('have.length',0);
 		
-		cy.get('.actions input[type="submit"]').click().then(()=>{
-			expect(stub.getCall(0)).to.be.calledWith('please fill all fields');
+		cy.get('input:invalid').should('have.length',1);
+		checkMaxFieldLength(cvvField,3,'not clear after end');
+		cy.get('input:invalid').should('have.length',0);
+				
+		cy.get(submitButton).click().then(()=>{
+			expect(stub.getCall(0)).to.be.calledWith('Check card number is 16 digits!');
 		});
 		
-	});	
-//	const stub = cy.stub;
-//	cy.on ('window:alert', stub );
-	
+		checkMaxFieldLength(numField,16,'clear after end');
 		
+		checkMinInvalidValues('card number', 16, cardData.cardNumber, numField);
+		
+		cy.get(cvvField).clear();
+
+		checkMinInvalidValues('cvv code', 3, cardData.cvvCode, cvvField);
+		
+		function checkMaxFieldLength(field, len, clear) {
+			cy.get(field)
+			.type(longInvalidNumber)
+			.then( (fieldInner) => {
+				cy.get(fieldInner).invoke('val').should('have.length', len);
+				if (clear == 'clear after end'){
+					cy.get(fieldInner).clear();			
+				}
+			});
+		};		
+		
+//		function checkMinInvalidValues(textForAlert, maxLength, initialValue, field) {
+//			cy.get(field).then( fieldInner => {
+//				for(let i = 0; i < maxLength; i++){
+//					if ( i < (maxLength - 1) ){
+//						let currentValue = initialValue.slice(i,i+1);
+//						cy.get(fieldInner).type(currentValue);
+//						cy.get(submitButton).click()
+//							.then(()=>{
+//								expect(stub.getCall(0))
+//								.to.be.calledWith(`Check ${textForAlert} is ${maxLength} digits!`);
+//							});
+//					}
+//					else if (i < maxLength){
+//						let currentValue = initialValue.slice(i,i+1);
+//						cy.log(currentValue);
+//						cy.get(fieldInner).type(currentValue);
+//					};
+//				};
+//			});
+//		};	
+		
+		
+		function checkMinInvalidValues(textForAlert, maxLength, initialValue, field) {
+			cy.get(field).then( fieldInner => {	
+				if( i < (maxLength - 1) ){
+					let currentValue = initialValue.slice(i,i+1);
+					cy.get(fieldInner).type(currentValue);
+					i++;
+					cy.get(submitButton).click()
+						.then(()=>{
+							expect(stub.getCall(0))
+							.to.be.calledWith(`Check ${textForAlert} is ${maxLength} digits!`);		
+						});
+					checkMinInvalidValues(textForAlert, maxLength, initialValue, field);
+				}
+				else if(i == (maxLength - 1)){
+					cy.log(`lingth string - ${i+1}`);
+					let currentValue = initialValue.slice(i,i+1);
+					cy.get(fieldInner).type(currentValue);
+					cy.log(currentValue);
+					i=0;
+				}
+			});	
+		};
+	});	
+	
 });
 
 
