@@ -3,13 +3,13 @@ describe("add customer page", () => {
     	cy.visit('https://demo.guru99.com/payment-gateway/index.php')
  	});
 	
-//	const cardData = {
-//		cardNumber: cardNumber,
-//		cvvCode: cvvCode,
-//		month: month,
-//		year: year,
-//		money: money
-//	}
+	const cardData = {
+		cardNumber: cardNumber,
+		cvvCode: cvvCode,
+		month: month,
+		year: year,
+		money: money
+	}
 	
 	it('payment with correct card data', () => {
 		cy.generateCard().then( cardData => {
@@ -54,19 +54,18 @@ describe("add customer page", () => {
 		});
 	});
 	
-//	it('check fields on payment form', () => {
-//		const cardData = {
-//			cardNumber: '4660345266401126',
-//			cvvCode: '872',
-//			month: '12',
-//			year: '2026',
-//			money: '100.00'
-//		}
-////		const cardData = ['1111111111111111', '111', '01', '2026', '100.00'];
-//		cy.selectProductInCart(3);
-////		cy.insertCardData(cardData);
-//		cy.emptyMontYear(cardData);
-////		cy.incorrectPaymentCheck();
-//	});
+	it('check fields on payment form', () => {
+		const cardData = {
+			cardNumber: '4660345266401126',
+			cvvCode: '872',
+			month: '12',
+			year: '2026',
+			money: '100.00'
+		};
+//		const cardData = ['1111111111111111', '111', '01', '2026', '100.00'];
+		cy.selectProductInCart(3);
+		cy.checkPaymentFormField(cardData);
+		cy.correctPaymentCheck();
+	});
 	
 });
