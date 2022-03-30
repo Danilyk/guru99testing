@@ -2,6 +2,7 @@
 
 // ----------------------<< generate new card data >>-------------------------
 Cypress.Commands.add('generateCard', (array) => {
+	
 	cy.contains('a','Generate Card Number').invoke('removeAttr', 'target').click();
 	cy.contains('h2','Here is your New Card');
 

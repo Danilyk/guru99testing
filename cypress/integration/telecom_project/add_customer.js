@@ -20,7 +20,7 @@ describe("add customer page", () => {
 		Cypress.on('uncaught:exception', (err, runnable) => {
 			return false;
 		});		
-		const userData = ['','Dima','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
+		const userData = ['','1111','Bomburov','wowa@bomba.com','ulitsa pushkina dom kolotushkina','+79998887766'];
 		cy.insertDataCustomer(userData);
 		cy.submitDataCustomer().then( (stub) => {
 			cy.invalidCustomerDataCheck(stub);	

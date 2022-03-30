@@ -1,13 +1,10 @@
-describe("add customer page", () => {
+describe("payment project page", () => {
 	beforeEach(() => {
     	cy.visit('https://demo.guru99.com/payment-gateway/index.php')
  	});
 	
-
-	
 	it('payment with correct card data', () => {
 		cy.generateCard().then( cardData => {
-//const credentials = ['4660345266401126', '872', '12', '2026', '100.00'];
 			cy.selectProductInCart(3);
 			cy.insertCardData(cardData);
 			cy.correctPaymentCheck();
@@ -22,7 +19,6 @@ describe("add customer page", () => {
 			year: '2026',
 			money: '100.00'
 		}
-//		const cardData = ['1111111111111111', '111', '01', '2026', '100.00'];
 		cy.selectProductInCart(3);
 		cy.insertCardData(cardData);
 		cy.incorrectPaymentCheck();
@@ -30,7 +26,6 @@ describe("add customer page", () => {
 	
 	it('verification of debiting money from a bank card', () => {
 		cy.generateCard().then( cardData => {
-//const credentials = ['4660345266401126', '872', '12', '2026', '100.00'];
 			cy.selectProductInCart('1');
 			cy.insertCardData(cardData);
 			cy.correctPaymentCheck();
@@ -41,7 +36,8 @@ describe("add customer page", () => {
 					cy.insertCardData(cardData);
 					cy.correctPaymentCheck();
 					cy.checkCardBalance(cardData.cardNumber).then( currentBalance => {
-						expect(parseInt(initialBalance)).to.be.equal(parseInt(currentBalance) + parseInt(amount));
+						expect(parseInt(initialBalance)).to.be
+						.equal(parseInt(currentBalance) + parseInt(amount));
 					});
 				});
 			});	
@@ -56,7 +52,6 @@ describe("add customer page", () => {
 			year: '2026',
 			money: '100.00'
 		};
-//		const cardData = ['1111111111111111', '111', '01', '2026', '100.00'];
 		cy.selectProductInCart(3);
 		cy.checkPaymentFormField(cardData);
 		cy.correctPaymentCheck();
