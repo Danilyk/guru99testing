@@ -3,17 +3,59 @@ name: Cypress Tests using Cypress Docker Image
 on: [push]
 
 jobs:
-  cypress-run:
+  cypress-run-chrome-desctop:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node12.18.3-chrome87-ff82
+    container: cypress/browsers:node14.17.0-chrome88-ff89
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
-      - name: Cypress run
+      - name: "Cypress run Desctop"
         uses: cypress-io/github-action@v2
         with:
           # Specify Browser since container image is compile with Firefox
           browser: chrome
+          
+  cypress-run-mobile-chrome:
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node14.17.0-chrome88-ff89
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: "Cypress run Mobile"
+        uses: cypress-io/github-action@v2
+        with:
+          # Specify Browser since container image is compile with Firefox
+          config: "viewportWidth=375,viewportHeight=667"
+          browser: chrome
+          
+  cypress-run-firefox-desctop:
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node12.18.3-chrome89-ff86
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: "Cypress run Desctop"
+        uses: cypress-io/github-action@v2
+        with:
+          browser: firefox
+          
+  cypress-run-mobile-firefox:
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node12.18.3-chrome89-ff86
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: "Cypress run Desctop"
+        uses: cypress-io/github-action@v2
+        with:
+          config: "viewportWidth=375,viewportHeight=667"
+          browser: firefox
+          
