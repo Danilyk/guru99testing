@@ -7,6 +7,6 @@
     "openMode": 0
   },
   "env": {
-    "mobileViewportWidthBreakpoint": 375
+    "mobileViewportWidthBreakpoint": 400
     }
 }
