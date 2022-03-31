@@ -34,7 +34,13 @@ Cypress.Commands.add('generateCard', (array) => {
 });
 
 Cypress.Commands.add('selectProductInCart', (quant) => {
-	cy.contains('#nav a','Cart').click();
+	if ( isMobile() ) {
+		cy.get('.fa-bars').click();
+		cy.get('#navPanel').contains('a','Cart').click();
+	} else {
+		cy.contains('#nav a','Cart').click();
+	}
+
 	cy.get('select[name="quantity"]').select(quant);
 	cy.get('input[value="Buy Now"]').click();
 });
@@ -56,7 +62,12 @@ Cypress.Commands.add('incorrectPaymentCheck', () => {
 });		
 
 Cypress.Commands.add('checkCardBalance', (cardNum) => {
-	cy.contains('#nav a','Check Credit Card Limit').click();
+	if ( isMobile() ) {
+		cy.get('.fa-bars').click();
+		cy.get('#navPanel').contains('a','Check Credit Card Limit').click();
+	} else {
+		cy.contains('#nav a','Check Credit Card Limit').click();
+	}
 	cy.get('input[name="card_nmuber"]').type(cardNum);
 	cy.get('input[value="submit"]').click();
 	cy.contains('h4', 'Credit Card Balance')
