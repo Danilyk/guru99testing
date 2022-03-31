@@ -1,9 +1,16 @@
 //-------------------- <<<< START!!!   PAYMENT GATEWAY >>>> ----------------------
 
 // ----------------------<< generate new card data >>-------------------------
+import { isMobile } from "./utils";
+
 Cypress.Commands.add('generateCard', (array) => {
 	
-	cy.contains('a','Generate Card Number').invoke('removeAttr', 'target').click();
+	if ( isMobile() ) {
+		cy.get('.fa-bars').click();
+		cy.get('#navPanel').contains('a','Generate Card Number').invoke('removeAttr', 'target').click();
+	} else {
+		cy.contains('a','Generate Card Number').invoke('removeAttr', 'target').click();
+	}
 	cy.contains('h2','Here is your New Card');
 
 	const cardData = {};
@@ -22,7 +29,7 @@ Cypress.Commands.add('generateCard', (array) => {
 							break;
 				}
 			});	
-	});
+		});
 	return cy.wrap(cardData);
 });
 
@@ -115,7 +122,6 @@ Cypress.Commands.add('checkPaymentFormField', (cardData) => {
 				}
 			});
 		};		
-		
 
 		function checkMinInvalidValues(textForAlert, maxLength, initialValue, field) {
 			cy.get(field).then( fieldInner => {	
@@ -139,8 +145,7 @@ Cypress.Commands.add('checkPaymentFormField', (cardData) => {
 				}
 			});	
 		};
-	});	
-	
+	});		
 });
 
 

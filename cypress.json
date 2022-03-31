@@ -1,1 +1,12 @@
-{}
+{
+  "integrationFolder": "cypress/integration",
+  "viewportHeight": 1000,
+  "viewportWidth": 1280,
+  "retries": {
+    "runMode": 1,
+    "openMode": 0
+  },
+  "env": {
+    "mobileViewportWidthBreakpoint": 375
+    }
+}
