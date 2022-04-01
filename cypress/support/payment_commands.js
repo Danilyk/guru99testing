@@ -35,7 +35,7 @@ Cypress.Commands.add('generateCard', (array) => {
 
 Cypress.Commands.add('selectProductInCart', (quant) => {
 	if ( isMobile() ) {
-		cy.get('.fa-bars').click();
+		cy.get('.navPanelToggle').click();
 		cy.get('#navPanel').contains('a','Cart').click();
 	} else {
 		cy.contains('#nav a','Cart').click();
@@ -63,7 +63,7 @@ Cypress.Commands.add('incorrectPaymentCheck', () => {
 
 Cypress.Commands.add('checkCardBalance', (cardNum) => {
 	if ( isMobile() ) {
-		cy.get('.fa-bars').click();
+		cy.get('.navPanelToggle').click();
 		cy.get('#navPanel').contains('a','Check Credit Card Limit').click();
 	} else {
 		cy.contains('#nav a','Check Credit Card Limit').click();
