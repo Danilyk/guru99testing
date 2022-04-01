@@ -6,7 +6,7 @@ import { isMobile } from "./utils";
 Cypress.Commands.add('generateCard', (array) => {
 	
 	if ( isMobile() ) {
-		cy.get('.fa-bars').click();
+		cy.get('.navPanelToggle').click();
 		cy.get('#navPanel').contains('a','Generate Card Number').invoke('removeAttr', 'target').click();
 	} else {
 		cy.contains('a','Generate Card Number').invoke('removeAttr', 'target').click();
